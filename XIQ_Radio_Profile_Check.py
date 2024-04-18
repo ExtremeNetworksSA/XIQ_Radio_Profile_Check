@@ -142,7 +142,8 @@ def checkRadioUsageOpt(radio_usage_opt_id):
     logging.info(f"Band Steering is set to {rawData['enable_band_steering']}")
     logging.info(f"Band Steering Mode is set to {rawData['band_steering_mode']}")
     logging.info(f"Weak Signal Probe Suppression Request is set to {rawData['enable_weak_signal_probe_request_suppression']}")
-    logging.info(f"The Weak SNR is set to {rawData['weak_snr_threshold']}")
+    if rawData['enable_weak_signal_probe_request_suppression']:
+        logging.info(f"The Weak SNR is set to {rawData['weak_snr_threshold']}")
     logging.info(f"High Density is set to {rawData['enable_high_density']}")
     if rawData['enable_high_density']:
         logging.info(f"High Density Data Rates supported Data Rates is set to {rawData['management_frame_basic_data_rate']}")
