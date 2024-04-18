@@ -142,7 +142,15 @@ def checkRadioUsageOpt(radio_usage_opt_id):
     logging.info(f"Band Steering is set to {rawData['enable_band_steering']}")
     logging.info(f"Band Steering Mode is set to {rawData['band_steering_mode']}")
     logging.info(f"Weak Signal Probe Suppression Request is set to {rawData['enable_weak_signal_probe_request_suppression']}")
+    logging.info(f"The Weak SNR is set to {rawData['weak_snr_threshold']}")
     logging.info(f"High Density is set to {rawData['enable_high_density']}")
+    if rawData['enable_high_density']:
+        logging.info(f"High Density Data Rates supported Data Rates is set to {rawData['management_frame_basic_data_rate']}")
+        logging.info(f"High Density - Suppress successive requests probe request is set to {rawData['enable_suppress_successive_probe_request']}")
+        if rawData['probe_response_reduction_option']:
+            logging.info(f"high Density - probe response reduction option is set to {rawData['probe_response_reduction_option']}")
+        else:
+            logging.info("high Density - No probe response reduction option selected")
 
 
 def main():
