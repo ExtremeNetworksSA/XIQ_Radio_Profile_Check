@@ -178,22 +178,56 @@ def main():
 
     existingProfiles = collectRadioProfiles(pageSize=100)
     existingProfilenameMap = {profile['name']: profile for profile in existingProfiles}
+    existingProfileList = list(existingProfilenameMap.keys())
+    existingProfileList.sort()
 
     while not valid_radio_profile:
-        # User enters name of radio profile 
-        radioProfileName = input("Please enter the name of the radio profile you would like to check: ")
-        if radioProfileName == 'q' or radioProfileName == 'quit':
-            print("script is exiting....\n")
-            raise SystemExit
-        elif radioProfileName in existingProfilenameMap:
-            logger.info(f"Radio Profile '{radioProfileName}' was found.")
-            valid_radio_profile = True
-        else:
-            logger.warning(f"Radio Profile '{radioProfileName}' was not found!") 
+        sizeofbatch = 10
+        batchcount = 0
+        print("\nPlease select the Radio profile you would like to check.")
+        if sizeofbatch < len(existingProfileList):
+            print(f"The script will list out {sizeofbatch} Radio Profiles at a time")
+            print(f"There are a total of {len(existingProfileList)} Radio Profiles.")
+        for i in range(0, len(existingProfileList), sizeofbatch):
+            batch = existingProfileList[i:i+sizeofbatch]
+            # User enters name of radio profile 
+            count = 1
+            countMap = {}
+            for radioProfileName in batch:
+                countMap[count] = radioProfileName
+                print(f"\t{count}.\t{radioProfileName}")
+                count +=1
+            input_msg = f"Please enter 1 - {count-1} "
+            if i+sizeofbatch < len(existingProfileList):
+                print(f"\tn.\tList next batch of Radio Profiles")
+                input_msg += ", n (for next page): "
+            else:
+                input_msg += ": "
+            radioProfileSelection = input(input_msg)
+            if radioProfileSelection.lower() == 'q' or radioProfileSelection.lower() == 'quit':
+                logging.error("script is exiting....\n")
+                raise SystemExit
+            elif radioProfileSelection.lower() == 'n' or radioProfileSelection.lower() == 'next':
+                batchcount = batchcount + sizeofbatch
+                continue
+            else:
+                try:
+                    radioProfileSelection = int(radioProfileSelection)
+                except:
+                    logging.warning("Please enter a valid response!!\n")
+                    continue
+            if 0 < radioProfileSelection < count:
+                valid_radio_profile = True
+                checkProfile = existingProfilenameMap[countMap[radioProfileSelection]]
+                #print(checkProfile)
+            else:
+                logging.warning("Please enter a valid response!!\n")
+                continue
+            break
 
-    
-    checkProfile = existingProfilenameMap[radioProfileName]
-    
+
+    # get the name of the profile
+    logger.info(f"The Profile name is {checkProfile['name']}")
     # get the max transmit power
     logger.info(f"Max Power is set to {checkProfile['max_transmit_power']}")
 
